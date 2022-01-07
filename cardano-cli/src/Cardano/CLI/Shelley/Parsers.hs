@@ -283,18 +283,36 @@ pScriptWitnessFiles witctx autoBalanceExecUnits scriptFlagPrefix scriptFlagPrefi
 
 pScriptDataOrFile :: String -> String -> String -> Parser ScriptDataOrFile
 pScriptDataOrFile dataFlagPrefix helpTextForValue helpTextForFile =
-      ScriptDataFile  <$> pScriptDataFile
-  <|> ScriptDataValue <$> pScriptDataValue
+      pScriptDataCborFile
+  <|> pScriptDataJsonFile
+  <|> pScriptDataFile -- TODO Deprecated. Remove this option in the future
+  <|> pScriptDataValue
   where
-    pScriptDataFile =
+    pScriptDataCborFile = ScriptDataCborFile <$>
       Opt.strOption
-        (  Opt.long (dataFlagPrefix ++ "-file")
-        <> Opt.metavar "FILE"
+        (  Opt.long (dataFlagPrefix ++ "-cbor-file")
+        <> Opt.metavar "CBOR FILE"
         <> Opt.help (helpTextForFile ++ " The file must follow the special \
                                          \JSON schema for script data.")
         )
 
-    pScriptDataValue =
+    pScriptDataJsonFile = ScriptDataJsonFile <$>
+      Opt.strOption
+        (  Opt.long (dataFlagPrefix ++ "-json-file")
+        <> Opt.metavar "JSON FILE"
+        <> Opt.help (helpTextForFile ++ " The file must follow the special \
+                                         \JSON schema for script data.")
+        )
+
+    pScriptDataFile = ScriptDataFile (Text.pack ("--" ++ dataFlagPrefix ++ "-file option is deprecated")) <$>
+      Opt.strOption
+        (  Opt.long (dataFlagPrefix ++ "-file")
+        <> Opt.metavar "JSON FILE"
+        <> Opt.help (helpTextForFile ++ " The file must follow the special \
+                                         \JSON schema for script data. (DEPECRATED)")
+        )
+
+    pScriptDataValue = ScriptDataValue <$>
       Opt.option readerScriptData
         (  Opt.long (dataFlagPrefix ++ "-value")
         <> Opt.metavar "JSON VALUE"
@@ -308,7 +326,6 @@ pScriptDataOrFile dataFlagPrefix helpTextForValue helpTextForFile =
       case scriptDataFromJson ScriptDataJsonNoSchema v of
         Left err -> fail (displayError err)
         Right sd -> return sd
-
 
 pStakeAddressCmd :: Parser StakeAddressCmd
 pStakeAddressCmd =

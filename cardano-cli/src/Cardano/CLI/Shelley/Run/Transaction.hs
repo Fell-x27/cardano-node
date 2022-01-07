@@ -23,6 +23,7 @@ import           Data.List (intersect, (\\))
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
+import qualified Data.Text.IO as Text
 import           Data.Type.Equality (TestEquality (..))
 
 import           Control.Monad.Trans.Except.Extra (firstExceptT, handleIOExceptT, hoistEither,
@@ -939,20 +940,20 @@ readScriptRedeemerOrFile = readScriptDataOrFile
 readScriptDataOrFile :: ScriptDataOrFile
                      -> ExceptT ShelleyTxCmdError IO ScriptData
 readScriptDataOrFile (ScriptDataValue d) = return d
-readScriptDataOrFile (ScriptDataFile fp) = do
-    bs <- handleIOExceptT (ShelleyTxCmdReadFileError . FileIOError fp) $
-            LBS.readFile fp
-    v  <- firstExceptT (ShelleyTxCmdScriptDataJsonParseError fp) $
-            hoistEither $
-              Aeson.eitherDecode' bs
-    sd <- firstExceptT (ShelleyTxCmdScriptDataConversionError fp) $
-            hoistEither $
-              scriptDataFromJson ScriptDataJsonDetailedSchema v
-    firstExceptT (ShelleyTxCmdScriptDataValidationError fp) $
-      hoistEither $
-        validateScriptData sd
-    return sd
-
+readScriptDataOrFile (ScriptDataFile deprecationMessage fp) = do
+  liftIO $ Text.hPutStrLn IO.stderr $ "WARNING: " <> deprecationMessage
+  readScriptDataOrFile (ScriptDataJsonFile fp)
+readScriptDataOrFile (ScriptDataJsonFile fp) = do
+  bs <- handleIOExceptT (ShelleyTxCmdReadFileError . FileIOError fp) $ LBS.readFile fp
+  v  <- firstExceptT (ShelleyTxCmdScriptDataJsonParseError fp) $ hoistEither $ Aeson.eitherDecode' bs
+  sd <- firstExceptT (ShelleyTxCmdScriptDataConversionError fp) $ hoistEither $ scriptDataFromJson ScriptDataJsonDetailedSchema v
+  firstExceptT (ShelleyTxCmdScriptDataValidationError fp) $ hoistEither $ validateScriptData sd
+  return sd
+readScriptDataOrFile (ScriptDataCborFile fp) = do
+  bs <- handleIOExceptT (ShelleyTxCmdReadFileError . FileIOError fp) $ BS.readFile fp
+  sd <- firstExceptT (ShelleyTxCmdMetaDecodeError fp) $ hoistEither $ deserialiseFromCBOR AsScriptData bs
+  firstExceptT (ShelleyTxCmdScriptDataValidationError fp) $ hoistEither $ validateScriptData sd
+  return sd
 
 -- ----------------------------------------------------------------------------
 -- Transaction signing
