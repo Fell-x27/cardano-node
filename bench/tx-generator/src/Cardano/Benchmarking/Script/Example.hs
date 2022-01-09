@@ -10,7 +10,7 @@ import           Data.Dependent.Sum ((==>) )
 
 import           Cardano.Api (AnyCardanoEra(..), CardanoEra(..), Quantity(..), ScriptData(..), SlotNo(..), quantityToLovelace )
 import           Cardano.Api.Shelley (ExecutionUnits(..))
-import           Cardano.Node.NodeAddress
+import           Cardano.Node.Configuration.NodeAddress
 import           Ouroboros.Network.NodeToClient (withIOManager)
 
 import           Cardano.Benchmarking.Types

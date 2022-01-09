@@ -36,7 +36,7 @@ import           Cardano.Node.Configuration.POM
 import           Cardano.Node.Handlers.Shutdown
 import           Cardano.Node.Protocol.Cardano
 import           Cardano.Node.Protocol.Types (SomeConsensusProtocol)
-import           Cardano.Node.NodeAddress
+import           Cardano.Node.Configuration.NodeAddress
 import           Cardano.Node.Types
 
 import           Cardano.Benchmarking.DSL

@@ -30,7 +30,7 @@ import           Data.Word
 import           GHC.Generics
 import           Data.Aeson
 
-import           Cardano.Node.NodeAddress
+import           Cardano.Node.Configuration.NodeAddress
 
 myJsonOptions :: Options
 myJsonOptions = defaultOptions {
