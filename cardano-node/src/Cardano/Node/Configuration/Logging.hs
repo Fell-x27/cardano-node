@@ -153,12 +153,11 @@ loggingCLIConfiguration = maybe emptyConfig readConfig
 
 -- | Create logging feature for `cardano-node`
 createLoggingLayer
-  :: TraceOptions
-  -> Text
+  :: Text
   -> NodeConfiguration
   -> SomeConsensusProtocol
   -> ExceptT ConfigError IO LoggingLayer
-createLoggingLayer topt ver nodeConfig' p = do
+createLoggingLayer ver nodeConfig' p = do
   logConfig <- loggingCLIConfiguration $
     if ncLoggingSwitch nodeConfig'
     -- Re-interpret node config again, as logging 'Configuration':
@@ -247,7 +246,7 @@ createLoggingLayer topt ver nodeConfig' p = do
 
      when (ncLogMetrics nodeConfig) $
        -- Record node metrics, if configured
-       startCapturingMetrics topt trace
+       startCapturingMetrics (ncTraceConfig nodeConfig) trace
 
    mkLogLayer :: Configuration -> Switchboard Text -> EKGDirect -> Trace IO Text -> LoggingLayer
    mkLogLayer logConfig switchBoard ekgDirect trace =

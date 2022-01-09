@@ -1,6 +1,6 @@
-{-# LANGUAGE DataKinds        #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE NamedFieldPuns   #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 
 
@@ -16,8 +16,8 @@ module Cardano.Node.Protocol.Byron
 
 
 import           Cardano.Prelude
-import           Control.Monad.Trans.Except.Extra (bimapExceptT, firstExceptT,
-                     hoistEither, hoistMaybe, left)
+import           Control.Monad.Trans.Except.Extra (bimapExceptT, firstExceptT, hoistEither,
+                   hoistMaybe, left)
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.Text as Text
 
@@ -43,9 +43,9 @@ import           Cardano.Tracing.OrphanInstances.Byron ()
 import           Cardano.Tracing.OrphanInstances.HardFork ()
 import           Cardano.Tracing.OrphanInstances.Shelley ()
 
-import           Cardano.Node.Tracing.Tracers.ChainDB ()
 import           Cardano.Node.Tracing.Era.Byron ()
 import           Cardano.Node.Tracing.Era.HardFork ()
+import           Cardano.Node.Tracing.Tracers.ChainDB ()
 
 
 

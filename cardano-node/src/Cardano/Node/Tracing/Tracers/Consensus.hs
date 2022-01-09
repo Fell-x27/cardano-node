@@ -11,8 +11,7 @@
 {-# OPTIONS_GHC -Wno-orphans  #-}
 
 module Cardano.Node.Tracing.Tracers.Consensus
-  (
-    severityChainSyncClientEvent
+  ( severityChainSyncClientEvent
   , namesForChainSyncClientEvent
   , docChainSyncClientEvent
 
@@ -416,21 +415,21 @@ namesForBlockFetchClient' ::
     BlockFetch.TraceFetchClientState header
   -> [Text]
 namesForBlockFetchClient' BlockFetch.AddedFetchRequest {} =
-      ["AddedFetchRequest"]
+  ["AddedFetchRequest"]
 namesForBlockFetchClient' BlockFetch.AcknowledgedFetchRequest {}  =
-      ["AcknowledgedFetchRequest"]
+  ["AcknowledgedFetchRequest"]
 namesForBlockFetchClient' BlockFetch.SendFetchRequest {} =
-      ["SendFetchRequest"]
+  ["SendFetchRequest"]
 namesForBlockFetchClient' BlockFetch.StartedFetchBatch {} =
-      ["StartedFetchBatch"]
+  ["StartedFetchBatch"]
 namesForBlockFetchClient' BlockFetch.CompletedBlockFetch  {} =
-      ["CompletedBlockFetch"]
+  ["CompletedBlockFetch"]
 namesForBlockFetchClient' BlockFetch.CompletedFetchBatch {} =
-      ["CompletedFetchBatch"]
+  ["CompletedFetchBatch"]
 namesForBlockFetchClient' BlockFetch.RejectedFetchBatch  {} =
-      ["RejectedFetchBatch"]
+  ["RejectedFetchBatch"]
 namesForBlockFetchClient' BlockFetch.ClientTerminating {} =
-      ["ClientTerminating"]
+  ["ClientTerminating"]
 
 instance LogFormatting (BlockFetch.TraceFetchClientState header) where
   forMachine _dtal BlockFetch.AddedFetchRequest {} =

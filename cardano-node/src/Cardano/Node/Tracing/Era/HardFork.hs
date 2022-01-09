@@ -36,7 +36,6 @@ import           Ouroboros.Consensus.HardFork.Combinator.AcrossEras (EraMismatch
                    OneEraLedgerUpdate (..), OneEraLedgerWarning (..), OneEraValidationErr (..),
                    mkEraMismatch)
 import           Ouroboros.Consensus.HardFork.Combinator.Condense ()
--- import           Ouroboros.Consensus.HardFork.History.EraParams (EraParams (..), SafeZone)
 import           Ouroboros.Consensus.HardFork.History
                    (EraParams (eraEpochSize, eraSafeZone, eraSlotLength))
 import           Ouroboros.Consensus.HardFork.History.EraParams (EraParams (EraParams))

@@ -6,7 +6,8 @@
 {-# LANGUAGE MonoLocalBinds             #-}
 {-# LANGUAGE NamedFieldPuns             #-}
 {-# LANGUAGE OverloadedStrings          #-}
-module Cardano.Node.NodeAddress
+
+module Cardano.Node.Configuration.NodeAddress
   ( -- * Node addresses
     NodeAddress'(..)
   , NodeIPAddress

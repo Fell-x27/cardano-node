@@ -40,7 +40,7 @@ import qualified Cardano.Chain.Update as Byron
 import           Cardano.Crypto (RequiresNetworkMagic (..))
 import qualified Cardano.Crypto.Hash as Crypto
 import           Cardano.Node.Configuration.Socket (SocketConfig (..), PartialSocketConfig (..))
-import           Cardano.Node.NodeAddress
+import           Cardano.Node.Configuration.NodeAddress
 
 --TODO: things will probably be clearer if we don't use these newtype wrappers and instead
 -- use records with named fields in the CLI code.
@@ -335,5 +335,3 @@ renderVRFPrivateKeyFilePermissionError err =
     GenericPermissionsExist fp ->
       "VRF private key file at: " <> Text.pack fp
       <> "has \"generic\" file permissions. Please remove all \"generic\" file permissions."
-
--- | Basic information about the node.

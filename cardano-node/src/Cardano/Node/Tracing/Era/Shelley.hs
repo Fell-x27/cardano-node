@@ -13,9 +13,7 @@
 
 {-# OPTIONS_GHC -Wno-orphans  #-}
 
-module Cardano.Node.Tracing.Era.Shelley ()
-  where
-
+module Cardano.Node.Tracing.Era.Shelley () where
 
 import           Data.Aeson (ToJSON (..), Value (..), (.=))
 import qualified Data.Aeson as Aeson
@@ -105,9 +103,6 @@ instance (  ToJSON (SupportsMempool.TxId (GenTx (ShelleyBlock era)))
     mkObject $
         ( "txid" .= txId tx )
       : [ "tx"   .= condense tx | dtal == DDetailed ]
-
--- instance ToJSON (SupportsMempool.TxId (GenTx (ShelleyBlock era))) where
---   toJSON i = toJSON (condense i)
 
 instance ShelleyBasedEra era => LogFormatting (Header (ShelleyBlock era)) where
   forMachine _dtal b = mkObject

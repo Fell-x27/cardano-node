@@ -27,7 +27,7 @@ import           Ouroboros.Consensus.Storage.LedgerDB.DiskPolicy (SnapshotInterv
 import           Cardano.Node.Configuration.POM (PartialNodeConfiguration (..), lastOption)
 import           Cardano.Node.Configuration.Socket
 import           Cardano.Node.Handlers.Shutdown
-import           Cardano.Node.NodeAddress
+import           Cardano.Node.Configuration.NodeAddress
 import           Cardano.Node.Types
 
 nodeCLIParser  :: Parser PartialNodeConfiguration

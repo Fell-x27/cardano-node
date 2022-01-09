@@ -21,7 +21,7 @@ import           Cardano.Prelude
 import           Cardano.Node.Configuration.TopologyP2P (NetworkTopology (..), PublicRootPeers (..),
                    LocalRootPeersGroups (..), LocalRootPeersGroup (..), RootConfig (..),
                    NodeSetup (..), PeerAdvertise (..), UseLedger (..))
-import           Cardano.Node.NodeAddress (NodeAddress' (..), NodeHostIPAddress (..),
+import           Cardano.Node.Configuration.NodeAddress (NodeAddress' (..), NodeHostIPAddress (..),
                    NodeHostIPv4Address (..), NodeHostIPv6Address (..),
                    NodeIPAddress, NodeIPv4Address, NodeIPv6Address)
 import           Cardano.Slotting.Slot (SlotNo (..))

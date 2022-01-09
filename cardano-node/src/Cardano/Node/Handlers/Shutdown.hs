@@ -45,11 +45,16 @@ import           Ouroboros.Network.Block (MaxSlotNo (..), SlotNo, pointSlot)
 
 
 data ShutdownTrace
-  = ShutdownRequested -- "received shutdown request"
-  | AbnormalShutdown -- "non-isEOFerror shutdown request"
-  | ShutdownUnexpectedInput Text -- "Received shutdown request but found unexpected input in --shutdown-ipc FD: "
-  | RequestingShutdown Text -- "Ringing the node shutdown doorbell:  " <> reason
-  | ShutdownArmedAtSlot SlotNo -- "will terminate upon reaching " <> pack (show maxSlot)
+  = ShutdownRequested
+  -- ^ Received shutdown request
+  | AbnormalShutdown
+  -- ^ Non-isEOFError shutdown request
+  | ShutdownUnexpectedInput Text
+  -- ^ Received shutdown request but found unexpected input in --shutdown-ipc FD:
+  | RequestingShutdown Text
+  -- ^ Ringing the node shutdown doorbell for reason
+  | ShutdownArmedAtSlot SlotNo
+  -- ^ Will terminate upon reaching maxSlot
   deriving (Generic, FromJSON, ToJSON)
 
 data ShutdownConfig

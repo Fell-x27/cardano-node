@@ -58,7 +58,7 @@ import           Cardano.Node.Configuration.Logging (LoggingLayer (..), createLo
 import           Cardano.Node.Configuration.POM (NodeConfiguration (..),
                    PartialNodeConfiguration (..), SomeNetworkP2PMode (..),
                    defaultPartialNodeConfiguration, makeNodeConfiguration, parseNodeConfigurationFP)
-import           Cardano.Node.NodeAddress
+import           Cardano.Node.Configuration.NodeAddress
 import           Cardano.Node.Startup
 import           Cardano.Node.Types
 import           Cardano.Node.Tracing.API
@@ -140,76 +140,81 @@ runNode cmdPc = do
               let ProtocolInfo { pInfoConfig } = Protocol.protocolInfo runP
               in getNetworkMagic $ Consensus.configBlock pInfoConfig
 
-    let handleNodeWithTracers
-          :: ( TraceConstraints blk
-             , Protocol.Protocol IO blk
-             )
-          => Protocol.ProtocolInfoArgs IO blk
-          -> IO ()
-        handleNodeWithTracers runP = do
-          -- This IORef contains node kernel structure which holds node kernel.
-          -- Used for ledger queries and peer connection status.
-          nodeKernelData <- mkNodeKernelData
-          let ProtocolInfo { pInfoConfig = cfg } = Protocol.protocolInfo runP
-          case ncEnableP2P nc of
-            SomeNetworkP2PMode p2pMode -> do
-              let fp = maybe  "No file path found!"
-                              unConfigPath
-                              (getLast (pncConfigFile cmdPc))
-              (tracers, mLoggingLayer) <-
-                case ncTraceConfig nc of
-                  TraceDispatcher{} -> do
-                    (, Nothing) <$>
-                      initTraceDispatcher
-                        nc
-                        p
-                        networkMagic
-                        nodeKernelData
-                        p2pMode
-                  _ -> do
-                    eLoggingLayer <- runExceptT $ createLoggingLayer
-                      (ncTraceConfig nc)
-                      (Text.pack (showVersion version))
-                      nc
-                      p
-
-                    loggingLayer <- case eLoggingLayer of
-                      Left err  -> putTextLn (show err) >> exitFailure
-                      Right res -> return res
-                    !trace <- setupTrace loggingLayer
-                    let tracer = contramap pack $ toLogObject trace
-                    logTracingVerbosity nc tracer
-
-                    (,Just loggingLayer) <$>
-                      mkTracers
-                        (Consensus.configBlock cfg)
-                        (ncTraceConfig nc)
-                        trace
-                        nodeKernelData
-                        (Just (llEKGDirect loggingLayer))
-                        p2pMode
-
-              getStartupInfo nc p fp
-                >>= mapM_ (traceWith $ startupTracer tracers)
-
-              Async.withAsync (handlePeersListSimple (error "Implement Tracer IO [Peer blk]") nodeKernelData)
-                  $ \_peerLogingThread ->
-                    -- We ignore peer loging thread if it dies, but it will be killed
-                    -- when 'handleSimpleNode' terminates.
-                        handleSimpleNode runP p2pMode tracers nc
-                          (setNodeKernel nodeKernelData)
-                        `finally`
-                        forM_ mLoggingLayer
-                          shutdownLoggingLayer
-
     case p of
-      SomeConsensusProtocol _ runP -> handleNodeWithTracers runP
+      SomeConsensusProtocol _ runP ->
+        handleNodeWithTracers cmdPc nc p networkMagic runP
+
+handleNodeWithTracers
+  :: ( TraceConstraints blk
+     , Protocol.Protocol IO blk
+     )
+  => PartialNodeConfiguration
+  -> NodeConfiguration
+  -> SomeConsensusProtocol
+  -> NetworkMagic
+  -> Protocol.ProtocolInfoArgs IO blk
+  -> IO ()
+handleNodeWithTracers  cmdPc nc p networkMagic runP = do
+  -- This IORef contains node kernel structure which holds node kernel.
+  -- Used for ledger queries and peer connection status.
+  nodeKernelData <- mkNodeKernelData
+  let ProtocolInfo { pInfoConfig = cfg } = Protocol.protocolInfo runP
+  case ncEnableP2P nc of
+    SomeNetworkP2PMode p2pMode -> do
+      let fp = maybe  "No file path found!"
+                      unConfigPath
+                      (getLast (pncConfigFile cmdPc))
+      (tracers, mLoggingLayer) <-
+        case ncTraceConfig nc of
+          TraceDispatcher{} -> do
+            (, Nothing) <$>
+              initTraceDispatcher
+                nc
+                p
+                networkMagic
+                nodeKernelData
+                p2pMode
+          _ -> do
+            eLoggingLayer <- runExceptT $ createLoggingLayer
+              (Text.pack (showVersion version))
+              nc
+              p
+
+            loggingLayer <- case eLoggingLayer of
+              Left err  -> putTextLn (show err) >> exitFailure
+              Right res -> return res
+            !trace <- setupTrace loggingLayer
+            let tracer = contramap pack $ toLogObject trace
+            logTracingVerbosity nc tracer
+
+            (,Just loggingLayer) <$>
+              mkTracers
+                (Consensus.configBlock cfg)
+                (ncTraceConfig nc)
+                trace
+                nodeKernelData
+                (Just (llEKGDirect loggingLayer))
+                p2pMode
+
+      getStartupInfo nc p fp
+        >>= mapM_ (traceWith $ startupTracer tracers)
+
+      Async.withAsync (handlePeersListSimple (error "Implement Tracer IO [Peer blk]") nodeKernelData)
+          $ \_peerLogingThread ->
+            -- We ignore peer loging thread if it dies, but it will be killed
+            -- when 'handleSimpleNode' terminates.
+                handleSimpleNode runP p2pMode tracers nc
+                  (setNodeKernel nodeKernelData)
+                `finally`
+                forM_ mLoggingLayer
+                  shutdownLoggingLayer
+
 
 logTracingVerbosity :: NodeConfiguration -> Tracer IO String -> IO ()
 logTracingVerbosity nc tracer =
   case ncTraceConfig nc of
     TracingOff -> return ()
-    TracingOn traceConf ->
+    TracingOnLegacy traceConf ->
       case traceVerbosity traceConf of
         NormalVerbosity -> traceWith tracer "tracing verbosity = normal verbosity "
         MinimalVerbosity -> traceWith tracer "tracing verbosity = minimal verbosity "

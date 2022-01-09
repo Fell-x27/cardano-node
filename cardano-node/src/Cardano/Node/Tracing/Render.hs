@@ -4,7 +4,6 @@
 
 module Cardano.Node.Tracing.Render
   (
-  -- renderBlockOrEBB
        renderChunkNo
      , renderHeaderHash
      , renderHeaderHashForDetails
@@ -48,15 +47,8 @@ import           Ouroboros.Network.Block (ChainHash (..), HeaderHash, StandardHa
 condenseT :: Condense a => a -> Text
 condenseT = Text.pack . condense
 
--- renderBlockOrEBB :: BlockOrEBB -> Text
--- renderBlockOrEBB (Block slotNo) = "Block at " <> renderSlotNo slotNo
--- renderBlockOrEBB (EBB epochNo) = "Epoch boundary block at " <> renderEpochNo epochNo
-
 renderChunkNo :: ChunkNo -> Text
 renderChunkNo = Text.pack . show . unChunkNo
-
--- renderEpochNo :: EpochNo -> Text
--- renderEpochNo = Text.pack . show . unEpochNo
 
 renderTipBlockNo :: ImmDB.Tip blk -> Text
 renderTipBlockNo = Text.pack . show . unBlockNo . ImmDB.tipBlockNo

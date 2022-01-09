@@ -25,7 +25,7 @@ import           Network.Socket (AddrInfo (..), AddrInfoFlag (..), Family (AF_IN
                    SockAddr, Socket, SocketType (..))
 import qualified Network.Socket as Socket
 
-import           Cardano.Node.NodeAddress
+import           Cardano.Node.Configuration.NodeAddress
 
 import           Ouroboros.Network.NodeToClient (LocalAddress (..), LocalSocket (..))
 

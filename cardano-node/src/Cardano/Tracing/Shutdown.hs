@@ -1,5 +1,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
+
 {-# OPTIONS_GHC -Wno-orphans  #-}
+
 module Cardano.Tracing.Shutdown where
 
 import Prelude (IO)

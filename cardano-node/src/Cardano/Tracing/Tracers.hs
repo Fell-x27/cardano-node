@@ -299,7 +299,7 @@ mkTracers
   -> Maybe EKGDirect
   -> NetworkP2PMode p2p
   -> IO (Tracers (ConnectionId RemoteAddress) (ConnectionId LocalAddress) blk p2p)
-mkTracers blockConfig tOpts@(TracingOn trSel) tr nodeKern ekgDirect enableP2P = do
+mkTracers blockConfig tOpts@(TracingOnLegacy trSel) tr nodeKern ekgDirect enableP2P = do
   fStats <- mkForgingStats
   consensusTracers <- mkConsensusTracers ekgDirect trSel verb tr nodeKern fStats
   elidedChainDB <- newstate  -- for eliding messages in ChainDB tracer
@@ -489,7 +489,7 @@ teeTraceChainTip
   -> Tracer IO (WithSeverity (ChainDB.TraceEvent blk))
 teeTraceChainTip _ _ TracingOff _ _ _ _ _ = nullTracer
 teeTraceChainTip _ _ TraceDispatcher{} _ _ _ _ _ = nullTracer
-teeTraceChainTip blockConfig fStats (TracingOn trSel) elided ekgDirect tFork trTrc trMet =
+teeTraceChainTip blockConfig fStats (TracingOnLegacy trSel) elided ekgDirect tFork trTrc trMet =
   Tracer $ \ev -> do
     traceWith (teeTraceChainTipElide (traceVerbosity trSel) elided trTrc) ev
     traceWith (ignoringSeverity (traceChainMetrics ekgDirect tFork blockConfig fStats trMet)) ev

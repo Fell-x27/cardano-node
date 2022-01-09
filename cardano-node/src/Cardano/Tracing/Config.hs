@@ -28,7 +28,7 @@ import           Cardano.Node.Orphans ()
 
 data TraceOptions
   = TracingOff
-  | TracingOn TraceSelection
+  | TracingOnLegacy TraceSelection
   | TraceDispatcher TraceSelection
   deriving (Eq, Show)
 

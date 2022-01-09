@@ -348,8 +348,7 @@ mkConsensusTracers trBase trForward mbTrEKG _trDataPoint trConfig nodeKernel = d
       }
 
 mkNodeToClientTracers :: forall blk.
-  ( Consensus.RunNode blk
-  )
+     Consensus.RunNode blk
   => Trace IO FormattedMessage
   -> Trace IO FormattedMessage
   -> Maybe (Trace IO FormattedMessage)
@@ -454,8 +453,8 @@ mkNodeToNodeTracers trBase trForward mbTrEKG _trDataPoint trConfig = do
           traceWith txSubmission2Tracer
       }
 
-mkDiffusionTracers ::
-     Trace IO FormattedMessage
+mkDiffusionTracers
+  :: Trace IO FormattedMessage
   -> Trace IO FormattedMessage
   -> Maybe (Trace IO FormattedMessage)
   -> Trace IO DataPoint

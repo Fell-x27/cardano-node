@@ -223,7 +223,7 @@ instance FromJSON PartialNodeConfiguration where
                                                  traceConfigParser v
                                                  (if useTraceDispatcher
                                                   then TraceDispatcher
-                                                  else TracingOn)
+                                                  else TracingOnLegacy)
                                             else pure TracingOff
 
       -- Protocol parameters

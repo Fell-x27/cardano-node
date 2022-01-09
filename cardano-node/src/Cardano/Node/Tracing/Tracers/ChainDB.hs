@@ -6,9 +6,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-
 {-# OPTIONS_GHC -Wno-orphans  #-}
-
 
 module Cardano.Node.Tracing.Tracers.ChainDB
   ( severityChainDB
@@ -677,9 +675,9 @@ sevTraceCopyToImmutableDBEvent ChainDB.NoBlocksToCopyToImmutableDB = Debug
 
 namesForChainDBCopyToImmutable :: ChainDB.TraceCopyToImmutableDBEvent blk -> [Text]
 namesForChainDBCopyToImmutable (ChainDB.CopiedBlockToImmutableDB {}) =
-      ["CopiedBlockToImmutableDB"]
+  ["CopiedBlockToImmutableDB"]
 namesForChainDBCopyToImmutable ChainDB.NoBlocksToCopyToImmutableDB =
-      ["NoBlocksToCopyToImmutableDB"]
+  ["NoBlocksToCopyToImmutableDB"]
 
 instance ConvertRawHash blk
           => LogFormatting (ChainDB.TraceCopyToImmutableDBEvent blk) where
@@ -908,8 +906,8 @@ instance ConvertRawHash blk
 
 
 docChainDBOpenEvent :: [DocMsg (ChainDB.TraceOpenEvent blk)]
-docChainDBOpenEvent = [
-      DocMsg
+docChainDBOpenEvent =
+    [ DocMsg
       (ChainDB.OpenedDB anyProto anyProto)
       []
       "The ChainDB was opened."
