@@ -1,4 +1,3 @@
-
 module Cardano.Tracer.Analyze.Types
   (
     AnalyzerParams(..)
